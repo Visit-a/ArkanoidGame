@@ -4,6 +4,7 @@
 #include "GameSettings.h"
 #include <assert.h>
 #include <sstream>
+#include <map>
 
 namespace SnakeGame
 {
@@ -19,9 +20,12 @@ namespace SnakeGame
 		data.GetTableTexts().clear();
 		data.GetTableTexts().reserve(MAX_RECORDS_TABLE_SIZE);
 
-		std::map<int, std::string> sortedRecordsTable;
+		
+		std::multimap<int, std::string> sortedRecordsTable;
 		for (const auto& item : game.recordsTable)
-			sortedRecordsTable[item.second] = item.first;
+		{
+			sortedRecordsTable.insert(std::make_pair(item.second, item.first));
+		}
 
 		auto it = sortedRecordsTable.rbegin();
 		for (int i = 0; i < MAX_RECORDS_TABLE_SIZE && it != sortedRecordsTable.rend(); ++i, ++it)

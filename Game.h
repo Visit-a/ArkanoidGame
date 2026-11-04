@@ -33,20 +33,26 @@ namespace SnakeGame
 		Switch
 	};
 
-	// RAII: Владеем данными состояния через unique_ptr с кастомным делетером
+	class Game;
+
 	class GameState
 	{
 	public:
 		GameState() = default;
 
-		GameState(GameStateType type, void* data, void(*deleter)(void*), bool isExclusivelyVisible)
-			: type(type), data(data, deleter), isExclusivelyVisible(isExclusivelyVisible) {
-		}
-
+		// Запрещаем копирование, разрешаем перемещение
 		GameState(const GameState&) = delete;
 		GameState& operator=(const GameState&) = delete;
 		GameState(GameState&&) noexcept = default;
 		GameState& operator=(GameState&&) noexcept = default;
+
+		// Фабричный метод для безопасной инициализации
+		void Init(GameStateType type, void* data, void(*deleter)(void*), bool isExclusivelyVisible)
+		{
+			this->type = type;
+			this->data = std::unique_ptr<void, void(*)(void*)>(data, deleter);
+			this->isExclusivelyVisible = isExclusivelyVisible;
+		}
 
 		GameStateType GetType() const { return type; }
 		bool IsExclusivelyVisible() const { return isExclusivelyVisible; }

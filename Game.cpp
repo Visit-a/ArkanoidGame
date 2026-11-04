@@ -10,7 +10,6 @@
 
 namespace SnakeGame
 {
-	// Хелперы RAII: каждый тип состояния имеет свой делетер
 	namespace
 	{
 		void DeleteMainMenuState(void* p) { delete static_cast<GameStateMainMenuData*>(p); }
@@ -156,35 +155,35 @@ namespace SnakeGame
 		{
 			auto* data = new GameStateMainMenuData();
 			InitGameStateMainMenu(*data, game);
-			state = GameState(GameStateType::MainMenu, data, DeleteMainMenuState, game.pendingGameStateIsExclusivelyVisible);
+			state.Init(GameStateType::MainMenu, data, DeleteMainMenuState, game.pendingGameStateIsExclusivelyVisible);
 			break;
 		}
 		case GameStateType::Playing:
 		{
 			auto* data = new GameStatePlayingData();
 			InitGameStatePlaying(*data, game);
-			state = GameState(GameStateType::Playing, data, DeletePlayingState, game.pendingGameStateIsExclusivelyVisible);
+			state.Init(GameStateType::Playing, data, DeletePlayingState, game.pendingGameStateIsExclusivelyVisible);
 			break;
 		}
 		case GameStateType::GameOver:
 		{
 			auto* data = new GameStateGameOverData();
 			InitGameStateGameOver(*data, game);
-			state = GameState(GameStateType::GameOver, data, DeleteGameOverState, game.pendingGameStateIsExclusivelyVisible);
+			state.Init(GameStateType::GameOver, data, DeleteGameOverState, game.pendingGameStateIsExclusivelyVisible);
 			break;
 		}
 		case GameStateType::ExitDialog:
 		{
 			auto* data = new GameStatePauseMenuData();
 			InitGameStatePauseMenu(*data, game);
-			state = GameState(GameStateType::ExitDialog, data, DeletePauseMenuState, game.pendingGameStateIsExclusivelyVisible);
+			state.Init(GameStateType::ExitDialog, data, DeletePauseMenuState, game.pendingGameStateIsExclusivelyVisible);
 			break;
 		}
 		case GameStateType::Records:
 		{
 			auto* data = new GameStateRecordsData();
 			InitGameStateRecords(*data, game);
-			state = GameState(GameStateType::Records, data, DeleteRecordsState, game.pendingGameStateIsExclusivelyVisible);
+			state.Init(GameStateType::Records, data, DeleteRecordsState, game.pendingGameStateIsExclusivelyVisible);
 			break;
 		}
 		default:
