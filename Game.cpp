@@ -10,15 +10,6 @@
 
 namespace SnakeGame
 {
-	namespace
-	{
-		void DeleteMainMenuState(void* p) { delete static_cast<GameStateMainMenuData*>(p); }
-		void DeletePlayingState(void* p) { delete static_cast<GameStatePlayingData*>(p); }
-		void DeleteGameOverState(void* p) { delete static_cast<GameStateGameOverData*>(p); }
-		void DeletePauseMenuState(void* p) { delete static_cast<GameStatePauseMenuData*>(p); }
-		void DeleteRecordsState(void* p) { delete static_cast<GameStateRecordsData*>(p); }
-	}
-
 	void InitGame(Game& game)
 	{
 		game.recordsTable =
@@ -152,40 +143,20 @@ namespace SnakeGame
 		switch (game.pendingGameStateType)
 		{
 		case GameStateType::MainMenu:
-		{
-			auto* data = new GameStateMainMenuData();
-			InitGameStateMainMenu(*data, game);
-			state.Init(GameStateType::MainMenu, data, DeleteMainMenuState, game.pendingGameStateIsExclusivelyVisible);
+			state.Init<GameStateMainMenuData>(GameStateType::MainMenu, game.pendingGameStateIsExclusivelyVisible, game, InitGameStateMainMenu);
 			break;
-		}
 		case GameStateType::Playing:
-		{
-			auto* data = new GameStatePlayingData();
-			InitGameStatePlaying(*data, game);
-			state.Init(GameStateType::Playing, data, DeletePlayingState, game.pendingGameStateIsExclusivelyVisible);
+			state.Init<GameStatePlayingData>(GameStateType::Playing, game.pendingGameStateIsExclusivelyVisible, game, InitGameStatePlaying);
 			break;
-		}
 		case GameStateType::GameOver:
-		{
-			auto* data = new GameStateGameOverData();
-			InitGameStateGameOver(*data, game);
-			state.Init(GameStateType::GameOver, data, DeleteGameOverState, game.pendingGameStateIsExclusivelyVisible);
+			state.Init<GameStateGameOverData>(GameStateType::GameOver, game.pendingGameStateIsExclusivelyVisible, game, InitGameStateGameOver);
 			break;
-		}
 		case GameStateType::ExitDialog:
-		{
-			auto* data = new GameStatePauseMenuData();
-			InitGameStatePauseMenu(*data, game);
-			state.Init(GameStateType::ExitDialog, data, DeletePauseMenuState, game.pendingGameStateIsExclusivelyVisible);
+			state.Init<GameStatePauseMenuData>(GameStateType::ExitDialog, game.pendingGameStateIsExclusivelyVisible, game, InitGameStatePauseMenu);
 			break;
-		}
 		case GameStateType::Records:
-		{
-			auto* data = new GameStateRecordsData();
-			InitGameStateRecords(*data, game);
-			state.Init(GameStateType::Records, data, DeleteRecordsState, game.pendingGameStateIsExclusivelyVisible);
+			state.Init<GameStateRecordsData>(GameStateType::Records, game.pendingGameStateIsExclusivelyVisible, game, InitGameStateRecords);
 			break;
-		}
 		default:
 			assert(false);
 			break;

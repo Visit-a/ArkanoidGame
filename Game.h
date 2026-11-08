@@ -40,17 +40,21 @@ namespace SnakeGame
 	public:
 		GameState() = default;
 
-		// Запрещаем копирование, разрешаем перемещение
 		GameState(const GameState&) = delete;
 		GameState& operator=(const GameState&) = delete;
 		GameState(GameState&&) noexcept = default;
 		GameState& operator=(GameState&&) noexcept = default;
 
-		// Фабричный метод для безопасной инициализации
-		void Init(GameStateType type, void* data, void(*deleter)(void*), bool isExclusivelyVisible)
+
+		template<typename T>
+		void Init(GameStateType type, bool isExclusivelyVisible, Game& game, void(*initFunc)(T&, Game&))
 		{
 			this->type = type;
-			this->data = std::unique_ptr<void, void(*)(void*)>(data, deleter);
+			std::unique_ptr<T> tempPtr = std::make_unique<T>();
+			initFunc(*tempPtr, game);
+			this->data = std::unique_ptr<void, void(*)(void*)>(tempPtr.release(), [](void* p) {
+				delete static_cast<T*>(p);
+				});
 			this->isExclusivelyVisible = isExclusivelyVisible;
 		}
 
