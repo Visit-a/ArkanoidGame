@@ -7,6 +7,7 @@
 #include "GameStatePauseMenu.h"
 #include "GameStateMainMenu.h"
 #include "GameStateRecords.h"
+#include "GameStateWin.h"
 
 namespace SnakeGame
 {
@@ -157,6 +158,9 @@ namespace SnakeGame
 		case GameStateType::Records:
 			state.Init<GameStateRecordsData>(GameStateType::Records, game.pendingGameStateIsExclusivelyVisible, game, InitGameStateRecords);
 			break;
+		case GameStateType::Win:
+			state.Init<GameStateWinData>(GameStateType::Win, true, game, InitGameStateWin);
+			break;
 		default:
 			assert(false);
 			break;
@@ -172,6 +176,7 @@ namespace SnakeGame
 		case GameStateType::GameOver: ShutdownGameStateGameOver(*state.GetDataAs<GameStateGameOverData>(), game); break;
 		case GameStateType::ExitDialog: ShutdownGameStatePauseMenu(*state.GetDataAs<GameStatePauseMenuData>(), game); break;
 		case GameStateType::Records: ShutdownGameStateRecords(*state.GetDataAs<GameStateRecordsData>(), game); break;
+		case GameStateType::Win: ShutdownGameStateWin(*state.GetDataAs<GameStateWinData>(), game); break;
 		default: assert(false); break;
 		}
 	}
@@ -185,6 +190,7 @@ namespace SnakeGame
 		case GameStateType::GameOver: HandleGameStateGameOverWindowEvent(*state.GetDataAs<GameStateGameOverData>(), game, event); break;
 		case GameStateType::ExitDialog: HandleGameStatePauseMenuWindowEvent(*state.GetDataAs<GameStatePauseMenuData>(), game, event); break;
 		case GameStateType::Records: HandleGameStateRecordsWindowEvent(*state.GetDataAs<GameStateRecordsData>(), game, event); break;
+		case GameStateType::Win: HandleGameStateWinWindowEvent(*state.GetDataAs<GameStateWinData>(), game, event); break;
 		default: assert(false); break;
 		}
 	}
@@ -198,6 +204,7 @@ namespace SnakeGame
 		case GameStateType::GameOver: UpdateGameStateGameOver(*state.GetDataAs<GameStateGameOverData>(), game, timeDelta); break;
 		case GameStateType::ExitDialog: UpdateGameStatePauseMenu(*state.GetDataAs<GameStatePauseMenuData>(), game, timeDelta); break;
 		case GameStateType::Records: UpdateGameStateRecords(*state.GetDataAs<GameStateRecordsData>(), game, timeDelta); break;
+		case GameStateType::Win: UpdateGameStateWin(*state.GetDataAs<GameStateWinData>(), game, timeDelta); break;
 		default: assert(false); break;
 		}
 	}
@@ -211,6 +218,7 @@ namespace SnakeGame
 		case GameStateType::GameOver: DrawGameStateGameOver(*state.GetDataAs<GameStateGameOverData>(), game, window); break;
 		case GameStateType::ExitDialog: DrawGameStatePauseMenu(*state.GetDataAs<GameStatePauseMenuData>(), game, window); break;
 		case GameStateType::Records: DrawGameStateRecords(*state.GetDataAs<GameStateRecordsData>(), game, window); break;
+		case GameStateType::Win: DrawGameStateWin(*state.GetDataAs<GameStateWinData>(), game, window); break;
 		default: assert(false); break;
 		}
 	}

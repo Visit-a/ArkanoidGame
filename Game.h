@@ -23,6 +23,7 @@ namespace SnakeGame
 		GameOver,
 		ExitDialog,
 		Records,
+		Win,
 	};
 
 	enum class GameStateChangeType
