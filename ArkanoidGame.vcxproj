@@ -159,14 +159,19 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="ATMState.cpp" />
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="Block.cpp" />
+    <ClCompile Include="BonusSystem.cpp" />
     <ClCompile Include="Brick.cpp" />
     <ClCompile Include="DurableBrick.cpp" />
+    <ClCompile Include="EditorMemento.cpp" />
+    <ClCompile Include="GameSave.cpp" />
     <ClCompile Include="GameStatePlaying.cpp" />
     <ClCompile Include="GameStateWin.cpp" />
     <ClCompile Include="GlassBrick.cpp" />
     <ClCompile Include="Platform.cpp" />
+    <ClCompile Include="ScoreObserver.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="GameMain.cpp" />
@@ -179,14 +184,20 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="ATMState.h" />
     <ClInclude Include="Ball.h" />
     <ClInclude Include="Block.h" />
+    <ClInclude Include="BonusSystem.h" />
     <ClInclude Include="Brick.h" />
     <ClInclude Include="DurableBrick.h" />
+    <ClInclude Include="EditorMemento.h" />
+    <ClInclude Include="EnemyPrototype.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="GameSave.h" />
     <ClInclude Include="GameStateWin.h" />
     <ClInclude Include="GlassBrick.h" />
     <ClInclude Include="Platform.h" />
+    <ClInclude Include="ScoreObserver.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameSettings.h" />
@@ -198,6 +209,9 @@
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="Vector.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

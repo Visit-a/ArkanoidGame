@@ -61,6 +61,21 @@
     <ClCompile Include="GlassBrick.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
+    <ClCompile Include="ATMState.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="BonusSystem.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorMemento.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="GameSave.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
+    <ClCompile Include="ScoreObserver.cpp">
+      <Filter>Sources</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game.h">
@@ -99,5 +114,14 @@
     <ClInclude Include="Brick.h" />
     <ClInclude Include="DurableBrick.h" />
     <ClInclude Include="GlassBrick.h" />
+    <ClInclude Include="ATMState.h" />
+    <ClInclude Include="BonusSystem.h" />
+    <ClInclude Include="EditorMemento.h" />
+    <ClInclude Include="EnemyPrototype.h" />
+    <ClInclude Include="GameSave.h" />
+    <ClInclude Include="ScoreObserver.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="README.md" />
   </ItemGroup>
 </Project>
