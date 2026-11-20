@@ -161,8 +161,11 @@
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Ball.cpp" />
     <ClCompile Include="Block.cpp" />
+    <ClCompile Include="Brick.cpp" />
+    <ClCompile Include="DurableBrick.cpp" />
     <ClCompile Include="GameStatePlaying.cpp" />
     <ClCompile Include="GameStateWin.cpp" />
+    <ClCompile Include="GlassBrick.cpp" />
     <ClCompile Include="Platform.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Game.cpp" />
@@ -178,8 +181,11 @@
     <ClInclude Include="Application.h" />
     <ClInclude Include="Ball.h" />
     <ClInclude Include="Block.h" />
+    <ClInclude Include="Brick.h" />
+    <ClInclude Include="DurableBrick.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GameStateWin.h" />
+    <ClInclude Include="GlassBrick.h" />
     <ClInclude Include="Platform.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="Game.h" />

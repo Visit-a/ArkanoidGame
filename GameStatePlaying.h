@@ -1,10 +1,10 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <memory>
+#include <vector>
 #include "Platform.h"
 #include "Ball.h"
-#include "Block.h"
-#include <string>
-#include <vector>
+#include "Brick.h"
 
 namespace SnakeGame
 {
@@ -20,7 +20,7 @@ namespace SnakeGame
 
         Platform& GetPlatform() { return platform; }
         Ball& GetBall() { return ball; }
-        std::vector<Block>& GetBlocks() { return blocks; }
+        std::vector<std::unique_ptr<Brick>>& GetBricks() { return bricks; }
 
         sf::Text& GetScoreText() { return scoreText; }
         sf::Text& GetInputHintText() { return inputHintText; }
@@ -41,7 +41,7 @@ namespace SnakeGame
 
         Platform platform;
         Ball ball;
-        std::vector<Block> blocks;
+        std::vector<std::unique_ptr<Brick>> bricks;
         int score = 0;
 
         sf::Text scoreText;

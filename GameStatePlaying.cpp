@@ -2,6 +2,8 @@
 #include "Game.h"
 #include "GameSettings.h"
 #include "Text.h"
+#include "DurableBrick.h"
+#include "GlassBrick.h"
 #include <cassert>
 #include <cmath>
 #include <algorithm>
@@ -10,50 +12,79 @@ namespace SnakeGame
 {
     namespace
     {
-        void CreateBlocks(GameStatePlayingData& data)
+        const float BRICK_WIDTH = 68.f;
+        const float BRICK_HEIGHT = 22.f;
+        const float BRICK_GAP = 5.f;
+        const int BRICK_COLUMNS = 10;
+        const int BRICK_ROWS = 5;
+
+        void CreateLevel(GameStatePlayingData& data)
         {
-            data.GetBlocks().clear();
+            data.GetBricks().clear();
 
-            const float gap = 5.f;
             const float totalWidth =
-                BLOCK_COLUMNS * BLOCK_WIDTH + (BLOCK_COLUMNS - 1) * gap;
+                BRICK_COLUMNS * BRICK_WIDTH + (BRICK_COLUMNS - 1) * BRICK_GAP;
             const float startX =
-                (SCREEN_WIDTH - totalWidth) / 2.f + BLOCK_WIDTH / 2.f;
+                (SCREEN_WIDTH - totalWidth) / 2.f + BRICK_WIDTH / 2.f;
 
-            for (int row = 0; row < BLOCK_ROWS; ++row)
+            // Оттенки применяются только к крепким блокам при получении урона.
+            const std::vector<sf::Color> durableDamageColors = {
+                sf::Color(170, 110, 230), // 3 HP
+                sf::Color(235, 165, 65),  // 2 HP
+                sf::Color(235, 75, 75)    // 1 HP
+            };
+
+            for (int row = 0; row < BRICK_ROWS; ++row)
             {
-                for (int col = 0; col < BLOCK_COLUMNS; ++col)
+                for (int col = 0; col < BRICK_COLUMNS; ++col)
                 {
                     const sf::Vector2f position(
-                        startX + col * (BLOCK_WIDTH + gap),
-                        65.f + row * (BLOCK_HEIGHT + gap));
+                        startX + col * (BRICK_WIDTH + BRICK_GAP),
+                        65.f + row * (BRICK_HEIGHT + BRICK_GAP));
+                    const sf::Vector2f size(BRICK_WIDTH, BRICK_HEIGHT);
 
-                    data.GetBlocks().emplace_back(
-                        data.GetBlockTexture(),
-                        position,
-                        sf::Vector2f(BLOCK_WIDTH, BLOCK_HEIGHT));
+                    if ((row == 0 || row == 1) && col % 3 == 1)
+                    {
+                        data.GetBricks().push_back(
+                            std::unique_ptr<Brick>(
+                                new DurableBrick(data.GetBlockTexture(),
+                                                 position, size,
+                                                 durableDamageColors)));
+                    }
+                    else if (row == 4 && col % 4 == 0)
+                    {
+                        data.GetBricks().push_back(
+                            std::unique_ptr<Brick>(
+                                new GlassBrick(data.GetBlockTexture(), position, size)));
+                    }
+                    else
+                    {
+                        // Обычные блоки используют ту же текстуру без перекрашивания.
+                        data.GetBricks().push_back(
+                            std::unique_ptr<Brick>(
+                                new Brick(data.GetBlockTexture(), position, size)));
+                    }
                 }
             }
         }
 
-        void ReflectBallFromBlock(Ball& ball, const sf::FloatRect& blockBounds)
+        void ReflectBallFromBrick(Ball& ball, const sf::FloatRect& brickBounds)
         {
             const sf::FloatRect ballBounds = ball.GetGlobalBounds();
 
             const float overlapLeft =
-                ballBounds.left + ballBounds.width - blockBounds.left;
+                ballBounds.left + ballBounds.width - brickBounds.left;
             const float overlapRight =
-                blockBounds.left + blockBounds.width - ballBounds.left;
+                brickBounds.left + brickBounds.width - ballBounds.left;
             const float overlapTop =
-                ballBounds.top + ballBounds.height - blockBounds.top;
+                ballBounds.top + ballBounds.height - brickBounds.top;
             const float overlapBottom =
-                blockBounds.top + blockBounds.height - ballBounds.top;
+                brickBounds.top + brickBounds.height - ballBounds.top;
 
             const float overlapX = std::min(overlapLeft, overlapRight);
             const float overlapY = std::min(overlapTop, overlapBottom);
 
             sf::Vector2f velocity = ball.GetVelocity();
-
             if (overlapX < overlapY)
                 velocity.x = -velocity.x;
             else
@@ -73,18 +104,15 @@ namespace SnakeGame
         data.GetBackground().setSize(
             sf::Vector2f((float)SCREEN_WIDTH, (float)SCREEN_HEGHT));
         data.GetBackground().setPosition(0.f, 0.f);
-        data.GetBackground().setFillColor(sf::Color(15, 18, 35));
+        data.GetBackground().setFillColor(sf::Color(30, 30, 30));
 
         data.GetPlatform() = Platform(
-            data.GetPlatformTexture(),
-            PLATFORM_WIDTH,
-            PLATFORM_HEIGHT,
+            data.GetPlatformTexture(), PLATFORM_WIDTH, PLATFORM_HEIGHT,
             { SCREEN_WIDTH / 2.f, (float)SCREEN_HEGHT - PLATFORM_HEIGHT });
 
         data.GetBall() = Ball(
-            data.GetBallTexture(),
-            BALL_RADIUS,
-            { SCREEN_WIDTH / 2.f, SCREEN_HEGHT - 70.f });
+            data.GetBallTexture(), BALL_RADIUS,
+            { SCREEN_WIDTH / 2.f, SCREEN_HEGHT / 2.f });
 
         const float angle = 45.f * 3.14159265f / 180.f;
         data.GetBall().SetVelocity({
@@ -93,7 +121,7 @@ namespace SnakeGame
         });
 
         data.score = 0;
-        CreateBlocks(data);
+        CreateLevel(data);
 
         data.GetScoreText().setFont(data.GetFont());
         data.GetScoreText().setCharacterSize(24);
@@ -101,7 +129,7 @@ namespace SnakeGame
         data.GetScoreText().setString("Score: 0");
 
         data.GetInputHintText().setFont(data.GetFont());
-        data.GetInputHintText().setCharacterSize(18);
+        data.GetInputHintText().setCharacterSize(24);
         data.GetInputHintText().setFillColor(sf::Color::White);
         data.GetInputHintText().setString("Move: Left/Right or A/D. ESC - pause");
         data.GetInputHintText().setOrigin(
@@ -115,9 +143,7 @@ namespace SnakeGame
     {
         if (event.type == sf::Event::KeyPressed &&
             event.key.code == sf::Keyboard::Escape)
-        {
             PushGameState(game, GameStateType::ExitDialog, false);
-        }
     }
 
     void UpdateGameStatePlaying(
@@ -137,58 +163,39 @@ namespace SnakeGame
             shift += PLATFORM_SPEED * timeDelta;
 
         platform.Move(shift, (float)SCREEN_WIDTH);
-        ball.Update(timeDelta);
+        ball.Move(timeDelta);
 
         sf::FloatRect ballBounds = ball.GetGlobalBounds();
 
         if (ballBounds.left < 0.f)
-        {
             velocity.x = std::abs(velocity.x);
-            ball.SetPosition({ BALL_RADIUS, ball.GetPosition().y });
-        }
         else if (ballBounds.left + ballBounds.width > SCREEN_WIDTH)
-        {
             velocity.x = -std::abs(velocity.x);
-            ball.SetPosition({ SCREEN_WIDTH - BALL_RADIUS, ball.GetPosition().y });
-        }
 
         if (ballBounds.top < 0.f)
-        {
             velocity.y = std::abs(velocity.y);
-            ball.SetPosition({ ball.GetPosition().x, BALL_RADIUS });
-        }
 
         if (velocity.y > 0.f &&
-            ball.GetGlobalBounds().intersects(platform.GetGlobalBounds()))
-        {
+            ballBounds.intersects(platform.GetSprite().getGlobalBounds()))
             velocity.y = -std::abs(velocity.y);
-
-            const float offset =
-                (ball.GetPosition().x - platform.GetPosition().x) /
-                (PLATFORM_WIDTH / 2.f);
-
-            const float clampedOffset =
-                std::max(-1.f, std::min(1.f, offset));
-
-            velocity.x = clampedOffset * BALL_SPEED * 0.8f;
-
-            const float speed =
-                std::sqrt(velocity.x * velocity.x + velocity.y * velocity.y);
-
-            if (speed > 0.f)
-                velocity *= BALL_SPEED / speed;
-        }
 
         ball.SetVelocity(velocity);
 
-        for (Block& block : data.GetBlocks())
+        // Проверяем одно столкновение за кадр.
+        for (auto& brick : data.GetBricks())
         {
-            if (block.IsActive() &&
-                ball.GetGlobalBounds().intersects(block.GetGlobalBounds()))
+            if (!brick->IsDestroyed() &&
+                ball.GetGlobalBounds().intersects(brick->GetGlobalBounds()))
             {
-                ReflectBallFromBlock(ball, block.GetGlobalBounds());
-                block.Destroy();
-                data.IncrementScore();
+                const sf::FloatRect hitBounds = brick->GetGlobalBounds();
+                const bool shouldBounce = brick->OnHit();
+
+                if (shouldBounce)
+                    ReflectBallFromBrick(ball, hitBounds);
+
+                if (brick->IsDestroyed())
+                    data.IncrementScore();
+
                 break;
             }
         }
@@ -201,19 +208,6 @@ namespace SnakeGame
             return;
         }
 
-        const bool allDestroyed = std::none_of(
-            data.GetBlocks().begin(),
-            data.GetBlocks().end(),
-            [](const Block& block) { return block.IsActive(); });
-
-        if (allDestroyed)
-        {
-            game.recordsTable[PLAYER_NAME] =
-                std::max(game.recordsTable[PLAYER_NAME], data.GetScore());
-            SwitchGameState(game, GameStateType::Win);
-            return;
-        }
-
         data.GetScoreText().setString(
             "Score: " + std::to_string(data.GetScore()));
     }
@@ -223,11 +217,8 @@ namespace SnakeGame
     {
         window.draw(data.GetBackground());
 
-        for (const Block& block : data.GetBlocks())
-        {
-            if (block.IsActive())
-                block.Draw(window);
-        }
+        for (const auto& brick : data.GetBricks())
+            brick->Draw(window);
 
         data.GetPlatform().Draw(window);
         data.GetBall().Draw(window);
@@ -239,7 +230,6 @@ namespace SnakeGame
 
         const sf::Vector2f viewSize =
             (sf::Vector2f)window.getView().getSize();
-
         data.GetInputHintText().setPosition(viewSize.x - 10.f, 10.f);
         window.draw(data.GetInputHintText());
     }
