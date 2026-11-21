@@ -38,6 +38,21 @@ namespace SnakeGame
         return true;
     }
 
+    void DurableBrick::RestoreState(bool isDestroyed, int hp)
+    {
+        destroyed = isDestroyed;
+        hitPoints = std::max(0, std::min(3, hp));
+        if (hitPoints <= 0) destroyed = true;
+        if (hitPoints >= 3) sprite.setColor(sf::Color(210, 125, 255));
+        else if (!damageColors.empty())
+        {
+            const std::size_t colorIndex = std::min<std::size_t>(
+                damageColors.size() - 1,
+                static_cast<std::size_t>(3 - hitPoints));
+            sprite.setColor(damageColors[colorIndex]);
+        }
+    }
+
     void DurableBrick::Draw(sf::RenderWindow& window) const
     {
         if (destroyed)

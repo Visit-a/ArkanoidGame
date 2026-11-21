@@ -17,6 +17,13 @@ namespace SnakeGame
         virtual void Update(float timeDelta);
 
         bool IsDestroyed() const { return destroyed; }
+        void Destroy() { destroyed = true; }
+        virtual int GetTypeId() const { return 0; } // 0 = обычный блок
+        virtual int GetHitPoints() const { return destroyed ? 0 : 1; }
+        virtual void RestoreState(bool isDestroyed, int hitPoints)
+        {
+            destroyed = isDestroyed;
+        }
         sf::FloatRect GetGlobalBounds() const { return sprite.getGlobalBounds(); }
 
     protected:

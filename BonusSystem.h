@@ -80,6 +80,12 @@ namespace SnakeGame
 
         const BonusContext& GetContext() const { return context; }
         bool HasActiveBonus() const { return activeTime > 0.f; }
+        void Clear()
+        {
+            drops.clear();
+            context = BonusContext();
+            activeTime = 0.f;
+        }
 
     private:
         void Activate(int type);

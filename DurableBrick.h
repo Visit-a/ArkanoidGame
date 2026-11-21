@@ -15,7 +15,9 @@ namespace SnakeGame
         bool OnHit() override;
         void Draw(sf::RenderWindow& window) const override;
 
-        int GetHitPoints() const { return hitPoints; }
+        int GetHitPoints() const override { return hitPoints; }
+        int GetTypeId() const override { return 1; }
+        void RestoreState(bool isDestroyed, int hp) override;
 
     private:
         int hitPoints = 3;

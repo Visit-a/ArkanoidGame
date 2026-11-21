@@ -1,5 +1,7 @@
 #include "Platform.h"
 #include "Sprite.h"
+#include "GameSettings.h"
+#include <algorithm>
 
 namespace SnakeGame
 {
@@ -18,6 +20,18 @@ namespace SnakeGame
         if (pos.x - halfWidth < 0.f) pos.x = halfWidth;
         if (pos.x + halfWidth > screenWidth) pos.x = screenWidth - halfWidth;
 
+        sprite.setPosition(pos);
+    }
+
+    void Platform::SetWidth(float width)
+    {
+        const sf::FloatRect local = sprite.getLocalBounds();
+        if (local.width <= 0.f) return;
+        const sf::Vector2f oldScale = sprite.getScale();
+        sprite.setScale(width / local.width, oldScale.y);
+        const float halfWidth = sprite.getGlobalBounds().width / 2.f;
+        sf::Vector2f pos = sprite.getPosition();
+        pos.x = std::max(halfWidth, std::min(pos.x, SCREEN_WIDTH - halfWidth));
         sprite.setPosition(pos);
     }
 

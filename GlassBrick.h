@@ -12,5 +12,6 @@ namespace SnakeGame
 
         bool OnHit() override;
         void Draw(sf::RenderWindow& window) const override;
+        int GetTypeId() const override { return 2; }
     };
 }

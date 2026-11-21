@@ -16,6 +16,8 @@ namespace SnakeGame
 
         const sf::Sprite& GetSprite() const { return sprite; }
         sf::Vector2f GetPosition() const { return sprite.getPosition(); }
+        float GetWidth() const { return sprite.getGlobalBounds().width; }
+        void SetWidth(float width);
         sf::FloatRect GetGlobalBounds() const override { return sprite.getGlobalBounds(); }
 
     private:
